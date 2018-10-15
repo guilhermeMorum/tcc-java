@@ -5,15 +5,24 @@ public class Simulacao {
 
     public static void main(String[] args) {
 
+        int num_rotas = 8;
+        int num_carros = 100;
+        int num_deuses = 300;
+        int num_geracoes = 100000;
+
         //Criação da população
+        List<Rota> rotas = new ArrayList<>();
+        for(int i = 0; i < num_rotas; i++){
+            rotas.add(Rota.random());
+        }
         List<Deus> deuses = new ArrayList<>();
-        for(int i = 0; i < 150; i++){
-            Deus deus = Deus.fromPopulation(100, 8);
+        for(int i = 0; i < num_deuses; i++){
+            Deus deus = Deus.fromPopulation(num_carros, rotas);
             deus.generateGenes();
             deuses.add(deus);
         }
 
-        for(int i = 0; i < 100000; i++) {
+        for(int i = 0; i < num_geracoes; i++) {
 
             for(Deus deus : deuses){
                 deus.distributeCars();
@@ -37,10 +46,10 @@ public class Simulacao {
             miniDeusa.mutate();
 
             //Atualizar população
+            deuses.remove(getQuemMereceMorrer(deuses));
+            deuses.remove(getQuemMereceMorrer(deuses));
             deuses.add(miniDeus);
             deuses.add(miniDeusa);
-            deuses.remove(kratos);
-            deuses.remove(atena);
 
             totalFitness(deuses);
 
@@ -56,6 +65,16 @@ public class Simulacao {
             total += deus.getTotalFitness();
         }
         System.out.println(total);
+    }
+
+    public static Deus getQuemMereceMorrer(List<Deus> deuses){
+        Deus morto = deuses.get(0);
+        for(Deus deus : deuses){
+            if(deus.getTotalFitness() > morto.getTotalFitness()){
+                morto = deus;
+            }
+        }
+        return morto;
     }
 
     public static Deus getKratos(List<Deus> deuses){

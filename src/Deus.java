@@ -23,7 +23,11 @@ public class Deus {
     }
 
     public void setRotas(List<Rota> rotas) {
-        this.rotas = rotas;
+        List<Rota> rotaList = new ArrayList<>();
+        for(Rota rota : rotas){
+            rotaList.add(new Rota(rota));
+        }
+        this.rotas = rotaList;
     }
 
     public void setTotalFitness(int totalFitness) {
@@ -50,12 +54,12 @@ public class Deus {
 
     private int[] genes;
 
-    private Deus(int pupolation, int routes){
+    private Deus(int pupolation, List<Rota> rotas){
         this.population = pupolation;
-        this.routes = routes;
+        this.routes = rotas.size();
         this.genes = new int[population];
+        this.setRotas(rotas);
         this.addCars();
-        this.addRoutes();
     }
 
     private Deus(Deus kratos){
@@ -78,8 +82,8 @@ public class Deus {
         }
     }
 
-    public static Deus fromPopulation(int population, int routes){
-        return new Deus(population, routes);
+    public static Deus fromPopulation(int population, List<Rota> rotas){
+        return new Deus(population, rotas);
     }
 
     public static Deus fromParent(Deus kratos){
@@ -136,7 +140,7 @@ public class Deus {
     public void mutate(){
         Random rn = new Random();
         for(int i = 0; i < genes.length; i++) {
-            if (rn.nextInt(100) == 1) {
+            if (rn.nextInt(1000) == 1) {
                 genes[rn.nextInt(genes.length)] = rn.nextInt(routes);
             }
         }

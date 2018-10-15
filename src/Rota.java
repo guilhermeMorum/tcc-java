@@ -14,6 +14,12 @@ public class Rota {
         this.limit = limit;
     }
 
+    public Rota(Rota rota){
+        this.base = rota.base;
+        this.limit = rota.limit;
+        this.carros = rota.carros;
+    }
+
     public List<Carro> getCarros(){
         return carros;
     }
