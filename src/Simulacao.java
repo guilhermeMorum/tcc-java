@@ -51,7 +51,9 @@ public class Simulacao {
             deuses.add(miniDeus);
             deuses.add(miniDeusa);
 
-            totalFitness(deuses);
+            if(i%(num_geracoes/10) == 0) {
+                mostraDados(deuses, kratos);
+            }
 
         }
 
@@ -59,12 +61,28 @@ public class Simulacao {
 
     }
 
-    public static void totalFitness(List<Deus> deuses){
+    public static void mostraDados(List<Deus> deuses, Deus fittest){
         int total = 0;
+        StringBuilder result = new StringBuilder();
+        for(Rota rota : fittest.getRotas()){
+            result.append("Base: ");
+            result.append(rota.getBase());
+            result.append(" Limite: ");
+            result.append(rota.getLimit());
+            result.append(" Peso: ");
+            result.append(rota.getPeso());
+            result.append("\n");
+            result.append("========================================================================================================================================================================\n");
+            for(Carro carro : rota.getCarros()){
+                result.append("<8E8> ");
+            }
+            result.append("\n========================================================================================================================================================================\n");
+        }
         for(Deus deus : deuses){
             total += deus.getTotalFitness();
         }
-        System.out.println(total);
+        System.out.println("Generation Fitness: "+total);
+        System.out.println(result);
     }
 
     public static Deus getQuemMereceMorrer(List<Deus> deuses){

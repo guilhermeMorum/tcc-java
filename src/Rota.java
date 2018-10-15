@@ -25,7 +25,15 @@ public class Rota {
     }
 
     public int getPeso(){
-        return carros.size() > limit ? base * carros.size() : base;
+        return carros.size() > limit ? base * (carros.size()/2) : base;
+    }
+
+    public int getBase(){
+        return base;
+    }
+
+    public int getLimit(){
+        return limit;
     }
 
     public void addCar(Carro carro){
