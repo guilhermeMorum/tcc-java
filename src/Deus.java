@@ -24,7 +24,7 @@ public class Deus {
 
     public void setRotas(List<Rota> rotas) {
         List<Rota> rotaList = new ArrayList<>();
-        for(Rota rota : rotas){
+        for (Rota rota : rotas) {
             rotaList.add(new Rota(rota));
         }
         this.rotas = rotaList;
@@ -54,7 +54,7 @@ public class Deus {
 
     private int[] genes;
 
-    private Deus(int pupolation, List<Rota> rotas){
+    private Deus(int pupolation, List<Rota> rotas) {
         this.population = pupolation;
         this.routes = rotas.size();
         this.genes = new int[population];
@@ -62,7 +62,7 @@ public class Deus {
         this.addCars();
     }
 
-    private Deus(Deus kratos){
+    private Deus(Deus kratos) {
         this.population = kratos.getPopulation();
         this.routes = kratos.getRoutes();
         this.genes = kratos.getGenes().clone();
@@ -70,76 +70,76 @@ public class Deus {
         this.rotas = kratos.getRotas();
     }
 
-    private void addCars(){
-        for(int i = 0; i < population; i++){
+    private void addCars() {
+        for (int i = 0; i < population; i++) {
             this.carros.add(new Carro());
         }
     }
 
-    private void addRoutes(){
-        for(int i = 0; i < routes; i++){
+    private void addRoutes() {
+        for (int i = 0; i < routes; i++) {
             this.rotas.add(Rota.random());
         }
     }
 
-    public static Deus fromPopulation(int population, List<Rota> rotas){
+    public static Deus fromPopulation(int population, List<Rota> rotas) {
         return new Deus(population, rotas);
     }
 
-    public static Deus fromParent(Deus kratos){
+    public static Deus fromParent(Deus kratos) {
         Deus deus = new Deus(kratos);
         return deus;
     }
 
-    public static void crossOver(Deus kratos, Deus atena, int[] genes1, int[] genes2){
+    public static void crossOver(Deus kratos, Deus atena, int[] genes1, int[] genes2) {
         int crossPoint = new Random().nextInt(kratos.genes.length);
         cloneArray(genes1, kratos.getGenes());
-        for(int i = 0; i < crossPoint; i++){
+        for (int i = 0; i < crossPoint; i++) {
             genes1[i] = atena.getGenes()[i];
         }
         cloneArray(genes2, atena.getGenes());
-        for(int i = 0; i < crossPoint; i++){
+        for (int i = 0; i < crossPoint; i++) {
             genes2[i] = kratos.getGenes()[i];
         }
     }
 
-    private static void cloneArray(int[] array, int[] toClone){
-        for(int i = 0; i < toClone.length; i++){
+    private static void cloneArray(int[] array, int[] toClone) {
+        for (int i = 0; i < toClone.length; i++) {
             array[i] = toClone[i];
         }
     }
 
-    public void distributeCars(){
-        for(Rota rota: rotas){
+    public void distributeCars() {
+        for (Rota rota : rotas) {
             rota.zerarCarros();
         }
-        for(int i = 0; i < population; i++){
+        for (int i = 0; i < population; i++) {
             rotas.get(genes[i]).addCar(carros.get(i));
         }
     }
 
-    public void generateGenes(){
+    public void generateGenes() {
         Random rn = new Random();
-        for(int i = 0; i < genes.length; i++){
+        for (int i = 0; i < genes.length; i++) {
             genes[i] = rn.nextInt(routes);
         }
     }
 
-    private void calculateFitness(){
+    private void calculateFitness() {
         totalFitness = 0;
-        for(Rota rota : rotas){
+        for (Rota rota : rotas) {
             totalFitness += rota.getPeso();
         }
     }
 
-    public int getTotalFitness(){
+    public int getTotalFitness() {
         calculateFitness();
         return totalFitness;
     }
 
-    public void mutate(){
+    public void mutate() {
         Random rn = new Random();
-        for(int i = 0; i < genes.length; i++) {
+        for (int i = 0; i < genes.length; i++) {
             if (rn.nextInt(1000) == 1) {
                 genes[rn.nextInt(genes.length)] = rn.nextInt(routes);
             }
