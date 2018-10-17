@@ -10,6 +10,10 @@ public class Deus {
     private final int population;
     private final int routes;
 
+    private int totalFitness = 0;
+
+    private int[] genes;
+
     public List<Carro> getCarros() {
         return carros;
     }
@@ -50,10 +54,6 @@ public class Deus {
         this.genes = genes;
     }
 
-    private int totalFitness = 0;
-
-    private int[] genes;
-
     private Deus(int pupolation, List<Rota> rotas){
         this.population = pupolation;
         this.routes = rotas.size();
@@ -67,7 +67,7 @@ public class Deus {
         this.routes = kratos.getRoutes();
         this.genes = kratos.getGenes().clone();
         this.carros = kratos.getCarros();
-        this.rotas = kratos.getRotas();
+        this.setRotas(kratos.getRotas());
     }
 
     private void addCars(){
@@ -82,7 +82,7 @@ public class Deus {
         }
     }
 
-    public static Deus fromPopulation(int population, List<Rota> rotas){
+    public static Deus withPopulation(int population, List<Rota> rotas){
         return new Deus(population, rotas);
     }
 
@@ -133,17 +133,33 @@ public class Deus {
     }
 
     public int getTotalFitness(){
-        calculateFitness();
         return totalFitness;
     }
 
     public void mutate(){
         Random rn = new Random();
         for(int i = 0; i < genes.length; i++) {
-            if (rn.nextInt(1000) == 1) {
-                genes[rn.nextInt(genes.length)] = rn.nextInt(routes);
+            if (rn.nextInt(100) == 1) {
+                genes[i] = rn.nextInt(routes);
             }
         }
+    }
+
+    public static void calculateFitness(List<Deus> deuses){
+        for(Deus deus : deuses){
+            deus.calculateFitness();
+        }
+    }
+
+    public static void calculateFitness(Deus... deuses){
+        for(Deus deus : deuses){
+            deus.calculateFitness();
+        }
+    }
+
+    @Override
+    public String toString(){
+        return "Fitness: " + totalFitness;
     }
 
 }

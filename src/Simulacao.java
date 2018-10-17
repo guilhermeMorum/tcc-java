@@ -6,35 +6,42 @@ public class Simulacao {
     public static void main(String[] args) {
 
         int num_rotas = 8;
-        int num_carros = 100;
-        int num_deuses = 300;
-        int num_geracoes = 100000;
+        int num_carros = 150;
+        int num_populacao = 1000;
+        int num_geracoes = 10000;
 
-        //Criação da população
+        //Geração das rotas
         List<Rota> rotas = new ArrayList<>();
         for(int i = 0; i < num_rotas; i++){
             rotas.add(Rota.random());
         }
+
+        //Geração da população
         List<Deus> deuses = new ArrayList<>();
-        for(int i = 0; i < num_deuses; i++){
-            Deus deus = Deus.fromPopulation(num_carros, rotas);
+        for(int i = 0; i < num_populacao; i++){
+            Deus deus = Deus.withPopulation(num_carros, rotas);
             deus.generateGenes();
             deuses.add(deus);
         }
 
+        Deus kratos = null, atena = null, miniDeus = null, miniDeusa = null;
+
+        //Processo de seleção
         for(int i = 0; i < num_geracoes; i++) {
 
+            //Distribuição dos carros de acordo com os genes
             for(Deus deus : deuses){
                 deus.distributeCars();
             }
 
             //Seleção
-            Deus kratos = getKratos(deuses);
-            Deus atena = getAtena(deuses, kratos);
+            Deus.calculateFitness(deuses);
+            kratos = getKratos(deuses);
+            atena = getAtena(deuses, kratos);
 
             //CrossOver
-            Deus miniDeus = Deus.fromParent(kratos);
-            Deus miniDeusa = Deus.fromParent(atena);
+            miniDeus = Deus.fromParent(kratos);
+            miniDeusa = Deus.fromParent(atena);
             int[] cross1 = new int[kratos.getGenes().length];
             int[] cross2 = new int[kratos.getGenes().length];
             Deus.crossOver(kratos, atena, cross1, cross2);
@@ -51,38 +58,28 @@ public class Simulacao {
             deuses.add(miniDeus);
             deuses.add(miniDeusa);
 
-            if(i%(num_geracoes/10) == 0) {
-                mostraDados(deuses, kratos);
+            if(i == 0){
+                miniDeus.distributeCars();
+                miniDeusa.distributeCars();
+                Deus.calculateFitness(miniDeus, miniDeusa);
+                mostraDados(kratos, atena, miniDeus, miniDeusa);
             }
 
         }
 
-        System.out.println();
+        miniDeus.distributeCars();
+        miniDeusa.distributeCars();
+        Deus.calculateFitness(miniDeus, miniDeusa);
+        mostraDados(kratos, atena, miniDeus, miniDeusa);
 
     }
 
-    public static void mostraDados(List<Deus> deuses, Deus fittest){
-        int total = 0;
-        StringBuilder result = new StringBuilder();
-        for(Rota rota : fittest.getRotas()){
-            result.append("Base: ");
-            result.append(rota.getBase());
-            result.append(" Limite: ");
-            result.append(rota.getLimit());
-            result.append(" Peso: ");
-            result.append(rota.getPeso());
-            result.append("\n");
-            result.append("========================================================================================================================================================================\n");
-            for(Carro carro : rota.getCarros()){
-                result.append("<8=8> ");
-            }
-            result.append("\n========================================================================================================================================================================\n");
+    public static void mostraDados(Deus kratos, Deus atena, Deus miniDeus, Deus miniDeusa){
+        System.out.println("Kratos Fitness: "+kratos.getTotalFitness() + " Atena Fitness: "+atena.getTotalFitness());
+        System.out.println("MiniDeus Fitness: "+miniDeus.getTotalFitness() + " MiniDeusa Fitness: "+miniDeusa.getTotalFitness());
+        for(Rota rota : kratos.getRotas()){
+            System.out.println(rota);
         }
-        for(Deus deus : deuses){
-            total += deus.getTotalFitness();
-        }
-        System.out.println("Generation Fitness: "+total);
-        System.out.println(result);
     }
 
     public static Deus getQuemMereceMorrer(List<Deus> deuses){
@@ -108,11 +105,16 @@ public class Simulacao {
     public static Deus getAtena(List<Deus> deuses, Deus kratos){
         Deus atena = deuses.get(0);
         for(Deus deus : deuses){
-            if(deus.getTotalFitness() > kratos.getTotalFitness() && deus.getTotalFitness() < atena.getTotalFitness()){
+            if(deus.getTotalFitness() < atena.getTotalFitness() && deus.getTotalFitness() > kratos.getTotalFitness()){
                 atena = deus;
             }
         }
         return atena;
+    }
+
+    public static List<Rota> getRotasRomenia(){
+        List<Rota> rotas = new ArrayList<>();
+        return rotas;
     }
 
 }
