@@ -55,7 +55,7 @@ public class Rota {
     }
 
     public void addCar(Carro carro){
-        carros.add(carro);
+        this.carros.add(carro);
     }
 
     public void zerarCarros(){
