@@ -5,10 +5,23 @@ public class Simulacao {
 
     public static void main(String[] args) {
 
+        String logMode = null;
+
+        if(args != null && args.length > 0){
+            switch(args[0]){
+                case "melhor":
+                case "rotas":
+                case "todos":
+                    logMode = args[0];
+                default: break;
+            }
+        }
+
         int num_rotas = 8;
-        int num_carros = 150;
+        int num_carros = 375;
         int num_populacao = 1000;
-        int num_geracoes = 10000;
+        int num_geracoes = 50;
+        int show_frequency = 100;
 
         //Geração das rotas
         List<Rota> rotas = new ArrayList<>();
@@ -25,9 +38,12 @@ public class Simulacao {
         }
 
         Deus kratos = null, atena = null, miniDeus = null, miniDeusa = null;
+        int[] lastGenerations = new int[num_geracoes];
+        lastGenerations[0] = 1;
 
+        int i;
         //Processo de seleção
-        for(int i = 0; i < num_geracoes; i++) {
+        for(i = 0; !converged(lastGenerations); i++) {
 
             //Distribuição dos carros de acordo com os genes
             for(Deus deus : deuses){
@@ -58,20 +74,53 @@ public class Simulacao {
             deuses.add(miniDeus);
             deuses.add(miniDeusa);
 
-            if(i == 0){
-                miniDeus.distributeCars();
-                miniDeusa.distributeCars();
-                Deus.calculateFitness(miniDeus, miniDeusa);
-                mostraDados(kratos, atena, miniDeus, miniDeusa);
+            if(i%show_frequency == 0){
+                mostraDados(miniDeus, miniDeusa, logMode, kratos, atena, deuses);
             }
+
+            lastGenerations[i%num_geracoes] = Deus.getFitness(deuses);
 
         }
 
-        miniDeus.distributeCars();
-        miniDeusa.distributeCars();
-        Deus.calculateFitness(miniDeus, miniDeusa);
-        mostraDados(kratos, atena, miniDeus, miniDeusa);
+        mostraDados(miniDeus, miniDeusa, logMode, kratos, atena, deuses);
 
+        System.out.println("Solução encontrada na geração: "+i);
+
+    }
+
+    public static boolean converged(int[] generations){
+        for(int fitness : generations){
+            for(int fitness2 : generations){
+                if(fitness != fitness2){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void log(String logMode, Object... params){
+        System.out.println("----------");
+        switch(logMode){
+            case "melhor":
+                System.out.println(((Deus) params[0]).getTotalFitness());
+                break;
+            case "rotas":
+                List<Rota> rotas = (List<Rota>) params[0];
+                for(Rota rota: rotas){
+                    System.out.printf("Base: %d; Limite: %d; Peso: %d; QntdCarros: %d;\n", rota.getBase(), rota.getLimit(), rota.getPeso(), rota.getCarros().size());
+                }
+                break;
+            case "todos":
+                List<Deus> deuses = (List<Deus>) params[0];
+                int totalFitness = 0;
+                for(Deus deus: deuses){
+                    totalFitness += deus.getTotalFitness();
+                }
+                System.out.println(totalFitness);
+                break;
+            default: break;
+        }
     }
 
     public static void mostraDados(Deus kratos, Deus atena, Deus miniDeus, Deus miniDeusa){
@@ -79,6 +128,27 @@ public class Simulacao {
         System.out.println("MiniDeus Fitness: "+miniDeus.getTotalFitness() + " MiniDeusa Fitness: "+miniDeusa.getTotalFitness());
         for(Rota rota : kratos.getRotas()){
             System.out.println(rota);
+        }
+    }
+
+    public static void mostraDados(Deus miniDeus, Deus miniDeusa, String logMode, Deus kratos, Deus atena, List<Deus> deuses){
+        miniDeus.distributeCars();
+        miniDeusa.distributeCars();
+        Deus.calculateFitness(miniDeus, miniDeusa);
+        if(logMode == null) {
+            mostraDados(kratos, atena, miniDeus, miniDeusa);
+        } else {
+            switch(logMode){
+                case "melhor":
+                    log(logMode, kratos);
+                    break;
+                case "rotas":
+                    log(logMode, kratos.getRotas());
+                    break;
+                case "todos":
+                    log(logMode, deuses);
+                default: break;
+            }
         }
     }
 

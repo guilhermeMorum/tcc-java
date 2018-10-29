@@ -157,6 +157,14 @@ public class Deus {
         }
     }
 
+    public static int getFitness(List<Deus> deuses){
+        int fitness = 0;
+        for(Deus deus : deuses){
+            fitness += deus.getTotalFitness();
+        }
+        return fitness;
+    }
+
     @Override
     public String toString(){
         return "Fitness: " + totalFitness;

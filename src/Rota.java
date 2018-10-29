@@ -35,7 +35,7 @@ public class Rota {
         if(carros.size() == 0){
             return 0;
         }
-        return carros.size() > limit ? base * (carros.size()/2) : base;
+        return carros.size() > limit ? base*(carros.size()-limit+1) : base;
     }
 
     public int getBase(){
@@ -64,7 +64,7 @@ public class Rota {
 
     public static Rota random(){
         Random rn = new Random();
-        return new Rota(rn.nextInt(6)+1, rn.nextInt(41));
+        return new Rota(rn.nextInt(1000)+100, rn.nextInt(90)+10);
     }
 
     @Override
