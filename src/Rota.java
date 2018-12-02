@@ -8,7 +8,7 @@ public class Rota {
     private int limit;
     private String name;
 
-    private List<Carro> carros = new ArrayList<>();
+    private List<Veiculo> veiculos = new ArrayList<>();
 
     public Rota(int base, int limit){
         this.base = base;
@@ -24,18 +24,18 @@ public class Rota {
     public Rota(Rota rota){
         this.base = rota.base;
         this.limit = rota.limit;
-        this.carros = rota.carros;
+        this.veiculos = rota.veiculos;
     }
 
-    public List<Carro> getCarros(){
-        return carros;
+    public List<Veiculo> getVeiculos(){
+        return veiculos;
     }
 
     public int getPeso(){
-        if(carros.size() == 0){
+        if(veiculos.size() == 0){
             return 0;
         }
-        return carros.size() > limit ? base*(carros.size()-limit+1) : base;
+        return veiculos.size() > limit ? base*(veiculos.size()-limit+1) : base;
     }
 
     public int getBase(){
@@ -54,12 +54,12 @@ public class Rota {
         this.name = name;
     }
 
-    public void addCar(Carro carro){
-        this.carros.add(carro);
+    public void addCar(Veiculo veiculo){
+        this.veiculos.add(veiculo);
     }
 
     public void zerarCarros(){
-        this.carros = new ArrayList<>();
+        this.veiculos = new ArrayList<>();
     }
 
     public static Rota random(){
@@ -80,7 +80,7 @@ public class Rota {
         result.append(this.getPeso());
         result.append("\n");
         result.append("========================================================================================================================================================================\n");
-        for(Carro carro : this.getCarros()){
+        for(Veiculo veiculo : this.getVeiculos()){
             result.append("<8=8> ");
         }
         result.append("\n========================================================================================================================================================================\n");

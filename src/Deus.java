@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Deus {
 
-    private List<Carro> carros = new ArrayList<>();
+    private List<Veiculo> veiculos = new ArrayList<>();
     private List<Rota> rotas = new ArrayList<>();
 
     private final int population;
@@ -14,12 +14,12 @@ public class Deus {
 
     private int[] genes;
 
-    public List<Carro> getCarros() {
-        return carros;
+    public List<Veiculo> getVeiculos() {
+        return veiculos;
     }
 
-    public void setCarros(List<Carro> carros) {
-        this.carros = carros;
+    public void setVeiculos(List<Veiculo> veiculos) {
+        this.veiculos = veiculos;
     }
 
     public List<Rota> getRotas() {
@@ -66,13 +66,13 @@ public class Deus {
         this.population = kratos.getPopulation();
         this.routes = kratos.getRoutes();
         this.genes = kratos.getGenes().clone();
-        this.carros = kratos.getCarros();
+        this.veiculos = kratos.getVeiculos();
         this.setRotas(kratos.getRotas());
     }
 
     private void addCars(){
         for(int i = 0; i < population; i++){
-            this.carros.add(new Carro());
+            this.veiculos.add(new Veiculo());
         }
     }
 
@@ -114,7 +114,7 @@ public class Deus {
             rota.zerarCarros();
         }
         for(int i = 0; i < population; i++){
-            rotas.get(genes[i]).addCar(carros.get(i));
+            rotas.get(genes[i]).addCar(veiculos.get(i));
         }
     }
 
